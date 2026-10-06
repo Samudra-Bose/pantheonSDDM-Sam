@@ -162,10 +162,10 @@ Column {
 
             background: Rectangle {
                 color:  config.LoginFieldBackgroundColor
-                opacity: 0.25
-                border.color: "transparent"
+                opacity: 0.58
+                border.color: parent.activeFocus ? config.HighlightBorderColor : Qt.rgba(1, 1, 1, 0.45)
                 border.width: parent.activeFocus ? 2 : 1
-                radius: config.RoundCorners || 0
+                radius: Math.max(10, config.RoundCorners || 0)
             }
 
             onAccepted: sddm.login(
