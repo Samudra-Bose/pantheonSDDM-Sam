@@ -149,7 +149,7 @@ Column {
             horizontalAlignment: TextInput.AlignHCenter
             z: 1
 
-            text: config.ForceLastUser == "true" ? selectUser.currentText : ""
+            text: config.ForceLastUser == "true" ? userModel.lastUser : ""
             color: config.LoginFieldTextColor
             font.bold: true
             font.capitalization: config.AllowUppercaseLettersInUsernames == "false" ? Font.AllLowercase : Font.MixedCase
