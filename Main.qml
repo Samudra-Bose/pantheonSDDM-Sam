@@ -203,42 +203,137 @@ Pane {
         }
 
         // ── BLUR / PARTIAL BLUR ────────────────────────────────────
+        // ── LOCALIZED FROSTED GLASS ────────────────────────────────
         ShaderEffectSource {
             id: blurMask
+            width: formGlass.width
             height: parent.height
-            width:  form.width
             anchors.centerIn: form
             sourceItem: backgroundImage
             sourceRect: Qt.rect(x, y, width, height)
-            visible: config.FullBlur == "true" || config.PartialBlur == "true"
+            live: true
         }
 
         FastBlur {
             id: blur
+            width: formGlass.width
             height: parent.height
-            width:  (config.FullBlur == "true" && config.PartialBlur == "false" && config.FormPosition != "center")
-                    ? parent.width - formBackground.width
-                    : config.FullBlur == "true" ? parent.width : form.width
-            anchors.centerIn: config.FullBlur == "true" ? backgroundImage : form
-            source: config.FullBlur == "true" ? backgroundImage : blurMask
-            radius: config.Blur == "" ? 48 : Math.min(config.Blur * 24, 64)
-            visible: config.FullBlur == "true" || config.PartialBlur == "true"
+            anchors.centerIn: form
+            source: blurMask
+            radius: 58
+            visible: true
+            z: 2.5
         }
 
-        // ── FORM GLASS BACKGROUND ──────────────────────────────────
+        // Single unified glass panel.
         Rectangle {
-            id: formBackground
-            anchors.fill: form
+            id: formGlass
+            width: form.width + 90
+            height: parent.height
             anchors.centerIn: form
             z: 3
-            color:   config.FormBackgroundColor
-            visible: config.HaveFormBackground == "true"
-            opacity: config.PartialBlur == "true" ? 0.25 : 0.88
-            radius:  config.RoundCorners || 18
 
-            // inner highlight rim
-            border.color: Qt.rgba(1,1,1,0.08)
+            // More transparent glass body so the blurred wallpaper remains visible.
+            color: Qt.rgba(0.045, 0.055, 0.075, 0.25)
+            radius: 30
+
+            // Outer glass edge.
+            border.color: Qt.rgba(1, 1, 1, 0.24)
             border.width: 1
+
+            // Frost diffusion layer.
+            Rectangle {
+                anchors.fill: parent
+                anchors.margins: 1
+                radius: parent.radius - 1
+                color: Qt.rgba(1, 1, 1, 0.045)
+
+                gradient: Gradient {
+                    orientation: Gradient.Vertical
+
+                    GradientStop {
+                        position: 0.0
+                        color: Qt.rgba(1, 1, 1, 0.14)
+                    }
+                    GradientStop {
+                        position: 0.22
+                        color: Qt.rgba(1, 1, 1, 0.065)
+                    }
+                    GradientStop {
+                        position: 0.55
+                        color: Qt.rgba(1, 1, 1, 0.025)
+                    }
+                    GradientStop {
+                        position: 1.0
+                        color: Qt.rgba(0, 0, 0, 0.035)
+                    }
+                }
+            }
+
+            // Soft vertical reflected-light strip.
+            Rectangle {
+                x: parent.width * 0.08
+                y: 18
+                width: Math.max(2, parent.width * 0.012)
+                height: parent.height - 36
+                radius: width
+                opacity: 0.24
+
+                gradient: Gradient {
+                    orientation: Gradient.Vertical
+
+                    GradientStop {
+                        position: 0.0
+                        color: Qt.rgba(1, 1, 1, 0.0)
+                    }
+                    GradientStop {
+                        position: 0.20
+                        color: Qt.rgba(1, 1, 1, 0.20)
+                    }
+                    GradientStop {
+                        position: 0.50
+                        color: Qt.rgba(1, 1, 1, 0.06)
+                    }
+                    GradientStop {
+                        position: 0.82
+                        color: Qt.rgba(1, 1, 1, 0.16)
+                    }
+                    GradientStop {
+                        position: 1.0
+                        color: Qt.rgba(1, 1, 1, 0.0)
+                    }
+                }
+            }
+
+            // Inner glass rim.
+            Rectangle {
+                anchors.fill: parent
+                anchors.margins: 2
+                radius: parent.radius - 2
+                color: "transparent"
+                border.color: Qt.rgba(1, 1, 1, 0.10)
+                border.width: 1
+            }
+
+            // Fine top reflection.
+            Rectangle {
+                x: 24
+                y: 14
+                width: parent.width - 48
+                height: 2
+                radius: 2
+                color: Qt.rgba(1, 1, 1, 0.18)
+            }
+
+            // Subtle lower reflection.
+            Rectangle {
+                x: 24
+                y: parent.height - 16
+                width: parent.width - 48
+                height: 1
+                radius: 1
+                color: Qt.rgba(1, 1, 1, 0.07)
+            }
         }
 
         // ── LOGIN FORM ─────────────────────────────────────────────
