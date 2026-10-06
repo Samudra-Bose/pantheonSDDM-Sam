@@ -36,6 +36,34 @@ Pane {
 
     focus: true
 
+    // Random cinematic background selected when the greeter starts
+    property var backgroundPool: [
+        "Backgrounds/before-the-road.mp4",
+        "Backgrounds/mountain-horizon.mp4",
+        "Backgrounds/tranquil-japan-lake-view.mp4",
+        "Backgrounds/japans-majestic-peaks-and-cherry-blossoms.mp4",
+        "Backgrounds/samurai-spirit-under-the-moon.mp4",
+        "Backgrounds/samurai-near-the-tree.mp4",
+        "Backgrounds/crimson-moon-over-mountain-peak.mp4",
+        "Backgrounds/moonlight-seascape.mp4",
+        "Backgrounds/landscape-sea-ships.mp4",
+        "Backgrounds/green-fields-and-peaks.mp4",
+        "Backgrounds/golden-hour-silence.mp4",
+        "Backgrounds/japanese-spring.mp4",
+        "Backgrounds/japanese-room-in-autumn.mp4",
+        "Backgrounds/under-the-cherry-tree.mp4",
+        "Backgrounds/under-the-dragons-gaze.mp4",
+        "Backgrounds/dawn-wanderer.mp4",
+        "Backgrounds/castle-beyond-the-clouds.mp4",
+        "Backgrounds/blind-dragon.mp4",
+        "Backgrounds/black-hole-in-nebula.mp4",
+        "Backgrounds/rocks-glow-with-autumn-fire.mp4",
+        "Backgrounds/serenity.mp4",
+        "Backgrounds/torn-mask-of-fate.mp4",
+        "Backgrounds/shadowblade-wanderer.mp4",
+        "Backgrounds/anime-train-at-sunset.mp4",
+    ]
+
     // ── Position helpers ───────────────────────────────────────────
     property bool leftleft:    config.HaveFormBackground == "true" && config.PartialBlur == "false" && config.FormPosition == "left"  && config.BackgroundHorizontalAlignment == "left"
     property bool leftcenter:  config.HaveFormBackground == "true" && config.PartialBlur == "false" && config.FormPosition == "left"  && config.BackgroundHorizontalAlignment == "center"
@@ -85,14 +113,21 @@ Pane {
             mipmap: true
 
             Component.onCompleted: {
-                var ext = config.Background.substring(config.Background.lastIndexOf(".") + 1).toLowerCase()
+                var selectedBackground = root.backgroundPool[
+                    Math.floor(Math.random() * root.backgroundPool.length)
+                ]
+
+                var ext = selectedBackground.substring(
+                    selectedBackground.lastIndexOf(".") + 1
+                ).toLowerCase()
+
                 const videoExts = ["mp4", "avi", "mov", "mkv", "m4v", "webm"]
                 if (videoExts.includes(ext)) {
                     backgroundPlaceholderImage.visible = true
-                    player.source = Qt.resolvedUrl(config.Background)
+                    player.source = Qt.resolvedUrl(selectedBackground)
                     player.play()
                 } else {
-                    backgroundImage.source = config.Background
+                    backgroundImage.source = selectedBackground
                 }
             }
         }
